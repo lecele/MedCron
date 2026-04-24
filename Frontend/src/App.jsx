@@ -68,8 +68,12 @@ function App() {
   // ─── Init ─────────────────────────────────────────────────────────────────
   useEffect(() => {
     const init = async () => {
-      // Só inicializa sessão/perfil se o LGPD já foi aceito
-      if (!lgpdConsentido) return
+      // Se não consentiu ainda nesta sessão, limpa as mensagens para garantir uma "Nova Conversa"
+      if (!lgpdConsentido) {
+        setMessages([])
+        localStorage.removeItem('med_messages')
+        return
+      }
       try {
         await ensureSession()
         const p = await getProfile()
@@ -241,15 +245,16 @@ function App() {
 
     // Mensagem de boas-vindas antes da primeira interação
     if (!lgpdConsentido) {
-      setTimeout(() => {
-        const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
-        setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
-        
-        // Mostra o modal da LGPD logo após o áudio de boas-vindas terminar
-        speak(welcome).then(() => {
-          setShowLgpdModal(true)
-        })
-      }, 500)
+      const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
+      setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
+      
+      // Fallback para garantir que o modal apareça mesmo se o áudio falhar ou demorar
+      const timer = setTimeout(() => setShowLgpdModal(true), 6000)
+      
+      speak(welcome).finally(() => {
+        clearTimeout(timer)
+        setShowLgpdModal(true)
+      })
       return
     }
 
