@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 
 let availableVoices = []
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -30,32 +30,44 @@ if (typeof document !== 'undefined') {
 }
 
 const speak = async (text) => {
-  const speechText = text
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/[*_~`#]/g, '')
-    .trim()
-  if (!speechText) return
-
-  if (window.speechSynthesis) {
-    window.speechSynthesis.cancel()
-    
-    if (availableVoices.length === 0) {
-      availableVoices = window.speechSynthesis.getVoices()
+  return new Promise((resolve) => {
+    const speechText = text
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/[*_~`#]/g, '')
+      .trim()
+      
+    if (!speechText) {
+      resolve()
+      return
     }
-    
-    // Tenta encontrar uma voz feminina (Luciana no iOS, Google português Brasil no Android, etc)
-    let voice = availableVoices.find(v => v.lang.startsWith('pt') && (v.name.includes('Luciana') || v.name.includes('Vitoria') || v.name.includes('Google português do Brasil')))
-    if (!voice) voice = availableVoices.find(v => v.lang === 'pt-BR')
-    if (!voice) voice = availableVoices.find(v => v.lang.startsWith('pt'))
 
-    const utterance = new SpeechSynthesisUtterance(speechText)
-    utterance.lang = 'pt-BR'
-    if (voice) utterance.voice = voice
-    // Ajustes para voz feminina/suave
-    utterance.rate = 1.05
-    utterance.pitch = 1.2 
-    window.speechSynthesis.speak(utterance)
-  }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel()
+      
+      if (availableVoices.length === 0) {
+        availableVoices = window.speechSynthesis.getVoices()
+      }
+      
+      // Tenta encontrar uma voz feminina (Luciana no iOS, Google português Brasil no Android, etc)
+      let voice = availableVoices.find(v => v.lang.startsWith('pt') && (v.name.includes('Luciana') || v.name.includes('Vitoria') || v.name.includes('Google português do Brasil')))
+      if (!voice) voice = availableVoices.find(v => v.lang === 'pt-BR')
+      if (!voice) voice = availableVoices.find(v => v.lang.startsWith('pt'))
+
+      const utterance = new SpeechSynthesisUtterance(speechText)
+      utterance.lang = 'pt-BR'
+      if (voice) utterance.voice = voice
+      // Ajustes para voz feminina/suave
+      utterance.rate = 1.05
+      utterance.pitch = 1.2 
+      
+      utterance.onend = () => resolve()
+      utterance.onerror = () => resolve()
+      
+      window.speechSynthesis.speak(utterance)
+    } else {
+      resolve()
+    }
+  })
 }
 
 export const useVoice = (onTranscript) => {

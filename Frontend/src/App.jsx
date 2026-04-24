@@ -153,6 +153,14 @@ function App() {
     // 3. Salva localmente (garantia offline)
     localStorage.setItem(LGPD_KEY, 'true')
     setLgpdConsentido(true)
+    setShowLgpdModal(false)
+    
+    // Continua a conversa após aceitar
+    setTimeout(() => {
+      const afterAccept = 'Termos aceitos. Obrigado! Para começarmos, você pode me enviar a foto da sua receita ou me dizer quais medicamentos você toma.'
+      setMessages(prev => [...prev, { role: 'assistant', content: afterAccept }])
+      speak(afterAccept)
+    }, 500)
   }
 
   // ─── Sync Bridge (iOS Fix) ────────────────────────────────────────────────
@@ -239,10 +247,11 @@ function App() {
       setTimeout(() => {
         const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
         setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
-        speak(welcome)
         
-        // Mostra o modal da LGPD logo após o áudio de boas-vindas
-        setTimeout(() => setShowLgpdModal(true), 2500)
+        // Mostra o modal da LGPD logo após o áudio de boas-vindas terminar
+        speak(welcome).then(() => {
+          setShowLgpdModal(true)
+        })
       }, 500)
       return
     }
