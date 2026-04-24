@@ -10,7 +10,7 @@ O projeto é dividido em três pilares principais que trabalham em harmonia:
 
 1.  **Interface Humana (React)**: Onde o usuário conversa, envia receitas e visualiza seu progresso.
 2.  **Cérebro de IA (OpenClaw + OpenAI)**: Onde o processamento de linguagem natural e a visão computacional (OCR) transformam fotos de receitas em agendamentos digitais precisos.
-3.  **Motor de Notificações (Node.js + Telegram)**: Um trabalhador de segundo plano que monitora o banco de dados e dispara alertas críticos.
+3.  **Sincronização (Calendário Nativo)**: Integração direta com o calendário do celular (iOS/Android) para lembretes locais sem dependência de bots externos.
 
 ---
 
@@ -39,11 +39,7 @@ O MedCron utiliza **Supabase (PostgreSQL)** para persistência resiliente.
     - `lembretes`: Cada dose individual que precisa ser tomada.
 - **Segurança (RLS)**: Cada usuário possui uma sessão anônima persistente (ou vinculada a e-mail), garantindo que apenas ele veja seus próprios dados médicos.
 
-### 4. O Motor de Lembretes (Telegram Worker)
-O arquivo `telegram_worker.js` é um serviço autônomo.
-- Ele roda continuamente (verificando a cada 30 segundos).
-- Consulta a tabela de `lembretes` em busca de doses que devem ser tomadas no minuto atual.
-- Dispara mensagens formatadas em HTML para o grupo do Telegram, incluindo o nome do paciente e a dosagem exata.
+
 
 ---
 
@@ -66,17 +62,14 @@ Diferente de apps comuns que geram uma "regra de repetição" (que falha em muit
 
 ## 🛠️ Comandos de Inicialização
 
-Para rodar o projeto localmente, você precisa de dois terminais:
+Para rodar o projeto localmente:
 
 **Terminal 1 (Interface):**
 ```bash
 npm run dev
 ```
 
-**Terminal 2 (Motor de Notificações):**
-```bash
-npm run worker
-```
+
 
 > **Nota**: A VPS com o OpenClaw Gateway deve estar online para que a inteligência artificial funcione. O status de conexão é exibido no cabeçalho do aplicativo.
 
@@ -84,10 +77,10 @@ npm run worker
 
 ## 📂 Estrutura de Pastas Principal
 
-- `/src/services/` — Lógica de integração (Supabase, OpenAI, Telegram, Calendar).
+- `/src/services/` — Lógica de integração (Supabase, OpenAI, Calendar).
 - `/src/hooks/` — Lógica de estado reutilizável (Lembretes, Voz).
 - `/src/components/` — UI modular (Calendário, Lista de Lembretes, Modais).
-- `telegram_worker.js` — Script de background para alertas.
+
 - `vite.config.js` — Configuração de proxy para a VPS.
 
 ---

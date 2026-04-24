@@ -16,14 +16,14 @@ Aplicativo de saúde para gestão de medicamentos integrado ao **OpenClaw**.
 - **MedCron (Sistema Integrado)**:
   - **🔍 Verificador**: OCR e extração precisa.
   - **💡 Conselheiro**: Validação e suporte às dúvidas.
-  - **⏰ Tutor**: Lembretes inteligentes e sync com Supabase/Telegram.
+  - **⏰ Tutor**: Lembretes inteligentes e sync com Calendário Nativo.
 
 ## ✅ Funcionalidades Implementadas
 - [x] Onboarding personalizado (com TTS de boas-vindas).
 - [x] **LGPD Dinâmica**: Consentimento solicitado de forma suave *após* a interação inicial, mantendo o usuário engajado. Modal 100% responsivo.
 - [x] Extração de receitas via Foto/PDF (GPT-4o).
 - [x] Calendário interativo de tratamento.
-- [x] **Sincronização em tempo real**: Ao marcar como "tomado", o status é salvo no Supabase e uma notificação de confirmação é enviada ao grupo do Telegram.
+- [x] **Sincronização em tempo real**: Ao marcar como "tomado", o status é salvo no Supabase e sincronizado com o plano de tratamento.
 
 ---
 *Desenvolvido por Antigravity para Leonardo.*

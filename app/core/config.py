@@ -23,9 +23,7 @@ class Settings(BaseSettings):
     # --- Google AI (Gemini) ---
     google_api_key: str
 
-    # --- Telegram ---
-    telegram_bot_token: str | None = None
-    telegram_bot_username: str | None = None
+
 
     # --- MemPalace (Memória de Longo Prazo na VPS) ---
     mempalace_api_url: str | None = None

@@ -90,7 +90,6 @@ async def escrivao_agent_node(state: AgentState) -> dict:
                     "dosagem": med.get("dosagem", ""),
                     "horario": horario,
                     "status": "pendente",
-                    "enviado_telegram": False,
                     "data_inicio": datetime.today().strftime("%Y-%m-%d"),
                     "duracao_dias": duracao,
                 }).execute()

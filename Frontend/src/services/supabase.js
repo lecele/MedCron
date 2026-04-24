@@ -127,7 +127,7 @@ export const saveLembretes = async (reminders) => {
       dosagem: r.dosage || r.dosagem || '-',
       horario: timeVal,
       status: r.status || 'pendente',
-      enviado_telegram: false,
+
       data_inicio: r.data_inicio,
       duracao_dias: r.duracao_dias || 7
     }

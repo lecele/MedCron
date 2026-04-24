@@ -4,7 +4,7 @@
 
 O MedCron é um assistente conversacional de saúde que extrai dados de receitas médicas via OCR,
 valida clinicamente as doses com IA farmacológica e agenda lembretes personalizados
-para o paciente — via calendário (iOS/Android) e Telegram.
+para o paciente — via calendário nativo (iOS/Android).
 
 🌐 **Deploy:** [medcron-app.vercel.app](https://medcron-app.vercel.app)
 
@@ -19,7 +19,7 @@ para o paciente — via calendário (iOS/Android) e Telegram.
 | 🧪 **Validação Farmacológica IA** | GPT-4o-mini verifica doses contra bulas, interações e perfil do paciente (peso, idade, populações especiais) |
 | ⚠️ **Alertas de Segurança** | Bloqueia automaticamente o agendamento se detectar risco real e orienta o paciente a consultar o médico |
 | 📅 **Calendário .ics** | Gera arquivo compatível com iOS (Calendário nativo) e Android (Google Calendar) |
-| 📱 **Lembretes no Telegram** | Vincula conta do paciente a um bot Telegram para receber notificações de medicação |
+
 | 🔒 **Conformidade LGPD** | Consentimento explícito antes de qualquer coleta de dado sensível de saúde (Art. 11, Lei 13.709/2018) |
 | 🗣️ **Voz (TTS)** | Respostas do agente narradas em áudio via OpenAI TTS (voz Onyx) |
 | 🎤 **Reconhecimento de Fala** | Entrada por microfone usando Web Speech API |
@@ -41,8 +41,7 @@ para o paciente — via calendário (iOS/Android) e Telegram.
 │  POST /api/chat ──────────→ LangGraph Graph                    │
 │  POST /api/consent                 ↓                           │
 │  GET  /api/calendar/generate  MedCron Agent (GPT-4o-mini)      │
-│  GET  /api/telegram/link           ↓                           │
-│  POST /api/telegram/webhook    Validador IA (GPT-4o-mini)      │
+
 │  POST /api/tts                     ↓                           │
 │  GET  /api/health             Supabase (PostgreSQL + RLS)      │
 └─────────────────────────────────────────────────────────────────┘
@@ -75,7 +74,7 @@ Usuário abre o app
         "Consulte seu médico"               ↓
         FIM (sem agendamento)       JSON → Supabase
                                            ↓
-                                  Calendário .ics + Telegram
+                                  Calendário .ics
 ```
 
 ---
@@ -131,7 +130,6 @@ MedCron_Py/
 │   │   └── chat_agent.py              # Chat genérico
 │   ├── services/
 │   │   ├── calendar_service.py        # Gerador de .ics (iOS/Android)
-│   │   ├── telegram_service.py        # Integração com bot Telegram
 │   │   └── memory_service.py          # Memória de longo prazo (MemPalace)
 │   └── core/
 │       ├── config.py                  # Configurações (pydantic-settings)
@@ -151,7 +149,7 @@ MedCron_Py/
 │   │       ├── agents.js              # Chamadas ao backend
 │   │       ├── supabase.js            # Auth + perfil
 │   │       ├── calendar.js            # Download .ics
-│   │       └── telegram.js            # Deep link Telegram
+
 │   ├── index.html
 │   └── package.json
 ├── .env.example                       # ✅ Template (sem valores reais)
@@ -172,7 +170,7 @@ MedCron_Py/
 | `profiles` | Perfil do paciente: nome, idade, peso, sexo, telefone, médico |
 | `receitas` | Receitas médicas processadas |
 | `medicamentos` | Medicamentos extraídos de cada receita |
-| `lembretes` | Horários de tomada para calendário e Telegram |
+| `lembretes` | Horários de tomada para sincronização do calendário |
 | `consents` | Registro de consentimento LGPD com timestamp e versão ⭐ |
 
 Todas as tabelas possuem **Row Level Security (RLS)** ativo — cada usuário acessa apenas seus próprios dados.
@@ -186,7 +184,7 @@ Todas as tabelas possuem **Row Level Security (RLS)** ativo — cada usuário ac
 - Python 3.11+
 - Node.js 18+
 - Conta Supabase
-- Chaves de API: OpenAI, Google AI (opcional), Telegram Bot
+- Chaves de API: OpenAI, Google AI (opcional)
 
 ### 2. Backend
 
@@ -243,9 +241,9 @@ O projeto está configurado para deploy fullstack na Vercel:
 SUPABASE_URL
 SUPABASE_ANON_KEY
 OPENAI_API_KEY
-TELEGRAM_BOT_TOKEN
+
 ENVIRONMENT=production
-ALLOWED_ORIGINS=https://medcron-app.vercel.app
+ALLOWED_ORIGINS=https://medcron.vercel.app
 ```
 
 ---
@@ -269,8 +267,7 @@ ALLOWED_ORIGINS=https://medcron-app.vercel.app
 | `POST` | `/api/chat` | Mensagem conversacional (com/sem imagem) |
 | `POST` | `/api/consent` | Registro de consentimento LGPD |
 | `GET` | `/api/calendar/generate` | Download do arquivo .ics |
-| `GET` | `/api/telegram/link` | Deep link para o bot Telegram |
-| `POST` | `/api/telegram/webhook` | Webhook de updates do Telegram |
+
 | `POST` | `/api/tts` | Texto para fala (OpenAI TTS) |
 
 ---
@@ -286,7 +283,7 @@ ALLOWED_ORIGINS=https://medcron-app.vercel.app
 | Voz | OpenAI TTS (Onyx) + Web Speech API |
 | Deploy | Vercel (fullstack) |
 | Calendario | RFC 5545 (.ics) |
-| Notificações | Telegram Bot API |
+| Notificações | Calendário Nativo (.ics) |
 
 ---
 

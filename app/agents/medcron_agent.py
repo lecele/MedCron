@@ -88,7 +88,7 @@ JSON SCHEMA (envie silenciosamente apos confirmacao final):
   "patient_weight": 0,
   "doctor_name": "NOME DO MEDICO",
   "doctor_crm": "CRM",
-  "telegram_phone": "NUMERO",
+  "telefone": "NUMERO",
   "data_inicio": "{iso_date}",
   "duracao_dias": 7,
   "safety_alerts": [],

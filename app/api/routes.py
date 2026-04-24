@@ -15,11 +15,6 @@ from app.agents.graph import medcron_graph
 from app.agents.state import AgentState, MedCronMessage
 from app.core.config import get_settings
 from app.services.calendar_service import gerar_ics
-from app.services.telegram_service import (
-    generate_deep_link, decode_usuario_id,
-    register_telegram_user, send_reminders_to_user, send_telegram_message
-)
-
 router = APIRouter()
 
 
@@ -192,8 +187,8 @@ async def _salvar_agendamento(dados: dict, usuario_id: str | None) -> tuple[str,
             perfil["idade"] = dados["patient_age"]
         if dados.get("patient_sex"):
             perfil["sexo"] = dados["patient_sex"]
-        if dados.get("telegram_phone"):
-            perfil["telefone"] = dados["telegram_phone"]
+        if dados.get("telefone"):
+            perfil["telefone"] = dados["telefone"]
         if dados.get("doctor_name"):
             perfil["medico_nome"] = dados["doctor_name"]
         if dados.get("doctor_crm"):
@@ -244,7 +239,6 @@ async def _salvar_agendamento(dados: dict, usuario_id: str | None) -> tuple[str,
                         "dosagem": dosagem,
                         "horario": horario,
                         "status": "pendente",
-                        "enviado_telegram": False,
                         "data_inicio": data_inicio_str,
                         "duracao_dias": duracao_dias,
                     }).execute()
@@ -326,115 +320,7 @@ async def generate_calendar(usuario_id: str):
         )
 
 
-# ── Telegram Deep Link ────────────────────────────────────────────────────────
-@router.get("/telegram/link", tags=["Telegram"])
-async def telegram_link(usuario_id: str):
-    """
-    Gera o deep link personalizado para o usuário abrir o bot MedCron no Telegram.
-    O link contém o usuario_id codificado em base64 para o bot identificar o paciente.
-    """
-    if not usuario_id:
-        raise HTTPException(status_code=400, detail="usuario_id obrigatório")
-    link = generate_deep_link(usuario_id)
-    return {"link": link}
 
-
-# ── Telegram Webhook ──────────────────────────────────────────────────────────
-@router.post("/telegram/webhook", tags=["Telegram"])
-async def telegram_webhook(update: dict):
-    """
-    Recebe updates do Telegram.
-    Quando o usuário clica em 'Iniciar' no bot, o Telegram envia:
-      { message: { text: '/start {token}', from: { id: ... } } }
-    O token é decodificado para obter o usuario_id, o chat_id é salvo no perfil
-    e os lembretes são enviados diretamente para o paciente.
-    """
-    try:
-        message = update.get("message") or update.get("edited_message", {})
-        if not message:
-            return {"ok": True}  # Ignorar updates sem mensagem (ex: channel_post)
-
-        chat_id = message.get("chat", {}).get("id")
-        text = message.get("text", "").strip()
-        from_user = message.get("from", {})
-        first_name = from_user.get("first_name", "Paciente")
-
-        if not chat_id:
-            return {"ok": True}
-
-        # Processa comando /start com token
-        if text.startswith("/start"):
-            parts = text.split(maxsplit=1)
-            token = parts[1].strip() if len(parts) > 1 else ""
-
-            if token:
-                usuario_id = decode_usuario_id(token)
-                if usuario_id:
-                    # Salva o chat_id no perfil do Supabase
-                    await register_telegram_user(usuario_id, chat_id)
-                    # Envia boas-vindas e os lembretes
-                    await send_telegram_message(
-                        chat_id,
-                        f"👋 Olá, <b>{first_name}</b>! Bem-vindo(a) ao MedCron!\n"
-                        "Vou enviar seus lembretes de medicação aqui neste chat. 💊"
-                    )
-                    await send_reminders_to_user(usuario_id, chat_id)
-                    return {"ok": True}
-
-            # /start sem token — usuário acessou o bot diretamente
-            await send_telegram_message(
-                chat_id,
-                "👋 Olá! Sou o <b>MedCron</b>, seu assistente de medicamentos.\n\n"
-                "Para configurar seus lembretes, acesse o app MedCron e clique em "
-                "<b>'Agendar no Telegram'</b> para vincular sua conta. 📱"
-            )
-
-        elif text.startswith("/lembretes"):
-            # Comando para re-listar lembretes manualmente
-            # Precisa ter o chat_id já vinculado no perfil
-            supabase = await get_supabase()
-            from app.core.clients import get_supabase
-            res = await supabase.table("profiles").select("id").eq(
-                "telegram_id", str(chat_id)
-            ).execute()
-            profiles = res.data or []
-            if profiles:
-                await send_reminders_to_user(profiles[0]["id"], chat_id)
-            else:
-                await send_telegram_message(
-                    chat_id,
-                    "⚠️ Conta não vinculada. Acesse o app MedCron e clique em 'Agendar no Telegram'."
-                )
-
-    except Exception as e:
-        print(f"[Webhook] Erro: {e}")
-        import traceback; traceback.print_exc()
-
-    return {"ok": True}
-
-
-# ── Telegram Webhook Setup ─────────────────────────────────────────────────────
-@router.post("/telegram/setup-webhook", tags=["Telegram"])
-async def setup_telegram_webhook(webhook_url: str):
-    """
-    Registra o webhook do bot no Telegram.
-    Chamar uma única vez após o deploy para ativar o recebimento de updates.
-    """
-    import urllib.request, json as _json
-    settings = get_settings()
-    token = settings.telegram_bot_token
-    if not token:
-        raise HTTPException(status_code=500, detail="TELEGRAM_BOT_TOKEN não configurado")
-
-    url = f"https://api.telegram.org/bot{token}/setWebhook"
-    payload = _json.dumps({"url": webhook_url}).encode()
-    req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(req, timeout=10) as res:
-            data = _json.loads(res.read())
-            return data
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao registrar webhook: {e}")
 
 
 # ── Text-to-Speech (OpenAI) ───────────────────────────────────────────────────

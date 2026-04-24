@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getLembretes, saveLembretes, deleteAllLembretes, updateLembreteStatus } from '../services/supabase'
-import { notifyRemindersToGroup } from '../services/telegram'
+
 
 export const useReminders = (profile) => {
   const [reminders, setReminders] = useState(() => {
@@ -57,11 +57,7 @@ export const useReminders = (profile) => {
       const isLocal = typeof id === 'string' && id.startsWith('local-')
       if (!isLocal) {
         await updateLembreteStatus(id, 'tomado')
-        const reminder = reminders.find(r => r.id === id)
-        if (reminder) {
-          const msg = `✅ <b>Medicação Tomada!</b>\n\n💊 <b>${reminder.name}</b>\n📏 Dose: ${reminder.dosage}\n👤 Usuário: ${profile?.nome || 'Paciente'}`
-          notifyRemindersToGroup([{ ...reminder, message_override: msg }]).catch(console.error)
-        }
+
       }
       setReminders(prev => prev.map(r => r.id === id ? { ...r, status: 'tomado' } : r))
     } catch (err) {

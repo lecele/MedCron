@@ -24,7 +24,7 @@ Dados necessários para o cadastro:
 - nome_completo (string) — para personalizar os lembretes
 - idade (número inteiro) — para adaptar a comunicação
 - peso_kg (número decimal) — para referência das doses da receita
-- telefone (string, com DDD) — para enviar notificações
+- telefone (string, com DDD) — para contato e identificação no app
 
 Analise o histórico da conversa e identifique quais campos já foram coletados.
 Responda SOMENTE em JSON com a seguinte estrutura:
@@ -48,7 +48,7 @@ Regras ESSENCIAIS:
 - Colete UM dado por vez de forma totalmente conversacional.
 - Se o paciente fizer uma pergunta paralela (por exemplo, "o que é isso?", "para que serve?"), responda de forma simples e IMEDIATAMENTE retome a coleta do próximo dado com uma frase de transição natural.
 - NUNCA pergunte sobre doenças crônicas, alergias ou histórico médico. Isso não é necessário para agendar lembretes.
-- IMPORTANTE: O número de TELEFONE é essencial para os lembretes do Telegram. Se o paciente não informou, você DEVE perguntar de forma gentil.
+- IMPORTANTE: O número de TELEFONE é essencial para identificação segura do paciente. Se o paciente não informou, você DEVE perguntar de forma gentil.
 - Quando todos os 4 campos (nome, idade, peso, telefone) estiverem preenchidos, defina cadastro_completo=true e em proxima_pergunta escreva uma mensagem calorosa de boas-vindas e peça para enviar a receita médica.
 - Use emojis com moderação 😊💊.
 - Responda sempre em Português Brasileiro.

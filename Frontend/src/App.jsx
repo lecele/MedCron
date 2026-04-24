@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { processMessage } from './services/agents'
 import { downloadIcsFile, generateSingleIcs, downloadCalendarFromServer } from './services/calendar'
-import { notifyRemindersToGroup } from './services/telegram'
 import {
   ensureSession, getProfile,
   getAuthState, signOutSession
@@ -223,7 +222,7 @@ function App() {
     })
   }
 
-  // Remoção do auto-agendamento do Telegram. Agora apenas via botão manual.
+
 
   // ─── Handle send ──────────────────────────────────────────────────────────
   const handleSend = async (e, customInput, fileData = null) => {

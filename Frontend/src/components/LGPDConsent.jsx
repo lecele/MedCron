@@ -152,7 +152,7 @@ export default function LGPDConsent({ onAccept, onDecline }) {
                   {[
                     { icon: '📄', text: 'Imagem da receita médica — para identificar medicamentos e doses' },
                     { icon: '⚖️', text: 'Nome, idade, peso e sexo — para validação clínica das doses' },
-                    { icon: '📱', text: 'Número de telefone — para envio de lembretes via Telegram' },
+                    { icon: '📱', text: 'Número de telefone — para contato de emergência e identificação' },
                   ].map(({ icon, text }) => (
                     <div key={text} style={{ display: 'flex', gap: '0.65rem', alignItems: 'flex-start' }}>
                       <span style={{ fontSize: '1rem', flexShrink: 0, marginTop: '0.05rem' }}>{icon}</span>

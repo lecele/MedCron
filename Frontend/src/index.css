@@ -627,15 +627,7 @@ body::after {
   transform: scale(0.97);
 }
 
-.telegram-btn {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(6, 182, 212, 0.05) 100%);
-  border-color: rgba(6, 182, 212, 0.4);
-}
 
-.telegram-btn:hover {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(6, 182, 212, 0.1) 100%);
-  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
-}
 
 .calendar-btn {
   background: linear-gradient(135deg, rgba(18, 204, 143, 0.2) 0%, rgba(18, 204, 143, 0.05) 100%);

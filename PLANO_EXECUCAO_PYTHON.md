@@ -40,7 +40,7 @@ A interface visual (React) será TOTALMENTE reaproveitada. Nenhuma alteração v
 - 🐛 **O Bug do Apple Calendar/Android (.ics)**: 
   - *Problema antigo*: O frontend React tentava montar o `.ics` no cliente e falhava miseravelmente quando um remédio tinha múltiplos horários ("08:00, 16:00, 00:00") devido a validação errada e blobs problemáticos no iOS.
   - *Nova Solução*: O botão "Baixar Calendário" no celular, chamará o backend (Ex: `GET /api/calendar/generate?patient_id=xxx`). O servidor FastAPI gerará um `.ics` perfeitamente protocolado garantindo que iPhones leiam perfeitamente os arquivos remotos.
-- 💬 **Acionamento do Telegram Bot:**
+- 📅 **Agendamento no Calendário Nativo**
   - O App não tentará se comportar feito um software desktop que ativa IAs autônomas no celular. 
   - O fluxo é simples: *Processado pela IA na Nuvem $\rightarrow$ Salvo no Supabase $\rightarrow$ Link `tg://resolve?domain=nome_bot` acionado nativamente*.
 

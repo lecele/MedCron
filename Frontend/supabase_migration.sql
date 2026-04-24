@@ -10,7 +10,7 @@ create table public.profiles (
   idade integer,
   sexo text,
   telefone text,
-  telegram_id text,
+
   medico_nome text,
   medico_crm text,
   onboarding_completo boolean default false,
@@ -47,7 +47,7 @@ create table public.lembretes (
   dosagem text,
   horario text not null,
   status text default 'pendente',
-  enviado_telegram boolean default false,
+
   created_at timestamptz default now()
 );
 
