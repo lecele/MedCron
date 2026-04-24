@@ -61,9 +61,14 @@ function App() {
 
   // ─── Auto-focus input ─────────────────────────────────────────────────────
   useEffect(() => {
-    // Mantém o foco sempre que não houver um modal aberto e não estiver carregando
+    // Foca no input sempre que o estado de loading mudar para falso
+    // ou quando a lista de mensagens mudar, DESDE QUE o modal LGPD não esteja visível.
     if (!loading && !showLgpdModal && inputRef.current) {
-      inputRef.current.focus()
+      // Timeout pequeno para garantir que o DOM renderizou e o teclado mobile não bloqueie
+      const timer = setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+      return () => clearTimeout(timer)
     }
   }, [loading, messages.length, showLgpdModal])
 
@@ -125,9 +130,13 @@ function App() {
   const clearChat = async () => {
     setMessages([])
     setProfile(null)
-    setLgpdConsentido(false) // Garante que peça LGPD na próxima interação
+    setLgpdConsentido(false) 
     setShowLgpdModal(false)
+    setLoading(false)
+    setInput('')
     localStorage.removeItem('med_messages')
+    localStorage.removeItem(LGPD_KEY)
+  }
     localStorage.removeItem('med_reminders')
     localStorage.removeItem('med_sessao_id')
     await signOutSession()
@@ -277,8 +286,7 @@ function App() {
       content: fileData ? `[Arquivo Enviado] ${messageText}` : messageText
     }
     setMessages(prev => [...prev, userMessage])
-    setInput('')
-
+    setInput('') // Garante a limpeza IMEDIATA do campo
     setLoading(true)
 
     try {
