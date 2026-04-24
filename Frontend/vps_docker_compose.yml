@@ -1,0 +1,35 @@
+services:
+  openclaw-gateway:
+    image: ghcr.io/phioranex/openclaw-docker:latest
+    container_name: openclaw-gateway
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "18789:18789"
+    volumes:
+      - ~/.openclaw:/home/node/.openclaw
+      - ~/.openclaw/workspace:/home/node/.openclaw/workspace
+    environment:
+      - NODE_ENV=production
+      - TZ=America/Sao_Paulo
+      - OPENCLAW_SKIP_SERVICE_CHECK=true
+      - OPENCLAW_GATEWAY_TOKEN=openclaw2026
+      - OPENCLAW_GATEWAY_PORT=18789
+      - OPENCLAW_GATEWAY_BIND=lan
+      - OPENCLAW_GATEWAY_MODE=remote
+      - OPENCLAW_GATEWAY_ALLOW_INSECURE_AUTH=true
+      - OPENCLAW_GATEWAY_DANGEROUSLY_DISABLE_DEVICE_AUTH=true
+      - OPENCLAW_GATEWAY_CONTROL_UI_ENABLED=true
+      - OPENCLAW_GATEWAY_CONTROL_UI_ALLOW_INSECURE_AUTH=true
+      - OPENCLAW_GATEWAY_CONTROL_UI_DANGEROUSLY_DISABLE_DEVICE_AUTH=true
+      - DANGEROUSLY_ALLOW_HOST_HEADER_ORIGIN_FALLBACK=true
+    command: ["gateway", "--allow-unconfigured"]
+    networks:
+      - openclaw-network
+
+networks:
+  openclaw-network:
+    name: openclaw-network
+    driver: bridge
+

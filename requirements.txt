@@ -1,0 +1,32 @@
+# MedCron_Py — Dependências Python
+# Instalar com: pip install -r requirements.txt
+
+# ── Framework Web ─────────────────────────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+
+# ── Configuração e Validação ──────────────────────────────────────────────────
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# ── LangChain / LangGraph ─────────────────────────────────────────────────────
+langchain==0.3.15
+langchain-openai==0.3.1
+langchain-google-genai==2.0.9
+langgraph==0.2.73
+
+# ── IA — LLMs ─────────────────────────────────────────────────────────────────
+openai==1.59.9
+google-generativeai==0.8.4
+
+# ── Supabase ──────────────────────────────────────────────────────────────────
+supabase==2.11.0
+
+# ── Utilitários ───────────────────────────────────────────────────────────────
+python-dotenv==1.0.1   # Carrega o .env em desenvolvimento local
+httpx==0.28.1          # Cliente HTTP assíncrono (usado pelo supabase)
+python-multipart==0.0.20  # Upload de arquivos via FastAPI
+
+# ── Desenvolvimento (remova em produção se quiser imagem menor) ───────────────
+# pytest==8.3.4
+# pytest-asyncio==0.24.0
