@@ -48,6 +48,9 @@ export default function LGPDConsent({ onAccept, onDecline }) {
       <div style={{
         maxWidth: '520px',
         width: '100%',
+        maxHeight: '85vh',
+        display: 'flex',
+        flexDirection: 'column',
         background: 'linear-gradient(145deg, rgba(15,15,30,0.98), rgba(20,20,50,0.98))',
         border: '1px solid rgba(67, 97, 238, 0.4)',
         borderRadius: '24px',
@@ -128,70 +131,72 @@ export default function LGPDConsent({ onAccept, onDecline }) {
           </div>
         ) : (
           <>
-            {/* Corpo do termo */}
-            <div style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '14px',
-              padding: '1.25rem',
-              marginBottom: '1.5rem',
-              fontSize: '0.85rem',
-              color: 'rgba(255,255,255,0.75)',
-              lineHeight: 1.65,
-            }}>
-              <p style={{ marginBottom: '1rem' }}>
-                Para usar o MedCron, você autoriza o tratamento dos seguintes
-                <strong style={{ color: 'white' }}> dados pessoais sensíveis de saúde</strong>:
-              </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1rem' }}>
-                {[
-                  { icon: '📄', text: 'Imagem da receita médica — para identificar medicamentos e doses' },
-                  { icon: '⚖️', text: 'Nome, idade, peso e sexo — para validação clínica das doses' },
-                  { icon: '📱', text: 'Número de telefone — para envio de lembretes via Telegram' },
-                ].map(({ icon, text }) => (
-                  <div key={text} style={{ display: 'flex', gap: '0.65rem', alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '1rem', flexShrink: 0, marginTop: '0.05rem' }}>{icon}</span>
-                    <span>{text}</span>
-                  </div>
-                ))}
-              </div>
-
+            {/* Corpo do termo rolavel */}
+            <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.5rem', marginBottom: '1.5rem' }}>
               <div style={{
-                borderTop: '1px solid rgba(255,255,255,0.08)',
-                paddingTop: '1rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '14px',
+                padding: '1.25rem',
+                marginBottom: '1rem',
+                fontSize: '0.85rem',
+                color: 'rgba(255,255,255,0.75)',
+                lineHeight: 1.65,
               }}>
-                <p>
-                  <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Finalidade:</strong>{' '}
-                  Exclusivamente para agendamento de lembretes de medicamentos.
+                <p style={{ marginBottom: '1rem' }}>
+                  Para usar o MedCron, você autoriza o tratamento dos seguintes
+                  <strong style={{ color: 'white' }}> dados pessoais sensíveis de saúde</strong>:
                 </p>
-                <p>
-                  <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Uso dos dados:</strong>{' '}
-                  Seus dados não são compartilhados com terceiros nem usados para fins comerciais.
-                </p>
-                <p>
-                  <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Seus direitos (LGPD):</strong>{' '}
-                  Você pode solicitar acesso, correção ou exclusão dos seus dados a qualquer momento
-                  limpando o histórico do aplicativo.
-                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1rem' }}>
+                  {[
+                    { icon: '📄', text: 'Imagem da receita médica — para identificar medicamentos e doses' },
+                    { icon: '⚖️', text: 'Nome, idade, peso e sexo — para validação clínica das doses' },
+                    { icon: '📱', text: 'Número de telefone — para envio de lembretes via Telegram' },
+                  ].map(({ icon, text }) => (
+                    <div key={text} style={{ display: 'flex', gap: '0.65rem', alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: '1rem', flexShrink: 0, marginTop: '0.05rem' }}>{icon}</span>
+                      <span>{text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{
+                  borderTop: '1px solid rgba(255,255,255,0.08)',
+                  paddingTop: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                }}>
+                  <p>
+                    <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Finalidade:</strong>{' '}
+                    Exclusivamente para agendamento de lembretes de medicamentos.
+                  </p>
+                  <p>
+                    <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Uso dos dados:</strong>{' '}
+                    Seus dados não são compartilhados com terceiros nem usados para fins comerciais.
+                  </p>
+                  <p>
+                    <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Seus direitos (LGPD):</strong>{' '}
+                    Você pode solicitar acesso, correção ou exclusão dos seus dados a qualquer momento
+                    limpando o histórico do aplicativo.
+                  </p>
+                </div>
               </div>
+
+              {/* Nota de desenvolvimento */}
+              <p style={{
+                color: 'rgba(255,255,255,0.3)',
+                fontSize: '0.7rem',
+                textAlign: 'center',
+                marginBottom: '0.5rem',
+              }}>
+                Aplicativo em fase de desenvolvimento — versão {VERSAO_POLITICA}
+              </p>
             </div>
 
-            {/* Nota de desenvolvimento */}
-            <p style={{
-              color: 'rgba(255,255,255,0.3)',
-              fontSize: '0.7rem',
-              textAlign: 'center',
-              marginBottom: '1.25rem',
-            }}>
-              Aplicativo em fase de desenvolvimento — versão {VERSAO_POLITICA}
-            </p>
-
             {/* Botões */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', flexShrink: 0 }}>
               <button
                 id="lgpd-accept-btn"
                 onClick={handleAccept}

@@ -38,12 +38,24 @@ function App() {
   // Mobile nav: 'chat' | 'config'
   const [activeTab, setActiveTab] = useState('chat')
 
+  const [showLgpdModal, setShowLgpdModal] = useState(false)
+
   // ─── LGPD: consentimento ─────────────────────────────────────────────────
   // Chave no localStorage: 'medcron_lgpd_consent_v{VERSAO_POLITICA}'
   const LGPD_KEY = `medcron_lgpd_consent_v${VERSAO_POLITICA}`
   const [lgpdConsentido, setLgpdConsentido] = useState(() => {
     return localStorage.getItem(LGPD_KEY) === 'true'
   })
+
+  // Controla a exibição atrasada do modal para que dê tempo de ler as boas-vindas
+  useEffect(() => {
+    if (!lgpdConsentido && messages.length > 0) {
+      const timer = setTimeout(() => setShowLgpdModal(true), 2500)
+      return () => clearTimeout(timer)
+    } else {
+      setShowLgpdModal(false)
+    }
+  }, [lgpdConsentido, messages.length])
 
   const fileInputRef = useRef(null)
   const inputRef = useRef(null)
@@ -230,7 +242,17 @@ function App() {
     setMessages(prev => [...prev, userMessage])
     setInput('')
 
-    // Mensagem de boas-vindas antes da primeira interação sem arquivo
+    // Mensagem de boas-vindas antes da primeira interação
+    if (!lgpdConsentido) {
+      setTimeout(() => {
+        const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
+        setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
+        speak(welcome)
+      }, 500)
+      return
+    }
+
+    // Mensagem de boas-vindas padrão caso já tenha lgpdConsentido e mensagens === 0
     if (messages.length === 0 && !fileData) {
       setTimeout(() => {
         const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Para começarmos, me envie uma foto da sua receita médica para que eu possa avaliar.'
@@ -358,8 +380,8 @@ function App() {
   // ─── Render ──────────────────────────────────────────────────────────────────────────
   return (
     <div className="container animate-fade">
-      {/* Modal LGPD — bloqueia tudo até o consentimento */}
-      {!lgpdConsentido && (
+      {/* Modal LGPD — bloqueia a tela, mas apenas após a primeira interação */}
+      {showLgpdModal && (
         <LGPDConsent
           onAccept={handleLGPDAccept}
           onDecline={() => { /* apenas mostra a tela de recusa dentro do modal */ }}

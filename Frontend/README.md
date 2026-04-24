@@ -19,7 +19,8 @@ Aplicativo de saúde para gestão de medicamentos integrado ao **OpenClaw**.
   - **⏰ Tutor**: Lembretes inteligentes e sync com Supabase/Telegram.
 
 ## ✅ Funcionalidades Implementadas
-- [x] Onboarding personalizado.
+- [x] Onboarding personalizado (com TTS de boas-vindas).
+- [x] **LGPD Dinâmica**: Consentimento solicitado de forma suave *após* a interação inicial, mantendo o usuário engajado. Modal 100% responsivo.
 - [x] Extração de receitas via Foto/PDF (GPT-4o).
 - [x] Calendário interativo de tratamento.
 - [x] **Sincronização em tempo real**: Ao marcar como "tomado", o status é salvo no Supabase e uma notificação de confirmação é enviada ao grupo do Telegram.

@@ -98,13 +98,14 @@ Usuário abre o app
 O MedCron trata **dados pessoais sensíveis de saúde** (receitas, medicamentos, peso, idade),
 enquadrando-se no **Art. 11 da Lei 13.709/2018 (LGPD)**.
 
-**Implementação:**
-- Modal de consentimento **bloqueia toda a interface** antes de qualquer coleta
-- Texto claro sobre: o que é coletado, finalidade e direitos do paciente
-- Aceite registrado no Supabase com timestamp e versão da política (`v1.0`)
-- Fallback em `localStorage` garante persistência offline
-- Dados **não são compartilhados** com terceiros nem usados para fins comerciais
-- RLS (Row Level Security) no Supabase: cada usuário acessa apenas seus próprios dados
+**Implementação Atualizada (UX):**
+- **Fluxo Não Bloqueante (Inicial):** O paciente recebe uma mensagem inicial de boas-vindas do agente sem bloqueio de tela.
+- **Interação Natural:** O modal de consentimento LGPD só é exibido *após* a primeira interação ou apresentação (delay estratégico de 2,5s). Isso melhora a retenção e experiência (UX).
+- Texto claro sobre: o que é coletado, finalidade e direitos do paciente.
+- Aceite registrado no Supabase com timestamp e versão da política (`v1.0`).
+- Fallback em `localStorage` garante persistência offline.
+- Componente 100% responsivo para resoluções mobile (com barra de rolagem interna, garantindo visibilidade dos botões de aceite).
+- RLS (Row Level Security) no Supabase: cada usuário acessa apenas seus próprios dados.
 
 ---
 
