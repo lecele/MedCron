@@ -61,8 +61,11 @@ function App() {
 
   // ─── Auto-focus input ─────────────────────────────────────────────────────
   useEffect(() => {
-    if (!loading && inputRef.current) inputRef.current.focus()
-  }, [loading, messages.length])
+    // Mantém o foco sempre que não houver um modal aberto e não estiver carregando
+    if (!loading && !showLgpdModal && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [loading, messages.length, showLgpdModal])
 
   // ─── Init ─────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -240,22 +243,23 @@ function App() {
     // Fluxo LGPD: Se não consentiu ainda nesta sessão
     if (!lgpdConsentido) {
       const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
+      
+      // Limpa o input imediatamente
+      setInput('')
+      
       setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
       
       // Bloqueia interações enquanto o agente fala
       setLoading(true)
 
       // Cálculo de tempo estimado de leitura (baseado em ~150 palavras por minuto)
-      // "welcome" tem ~165 caracteres. Aprox 8 a 10 segundos.
-      const estimatedTimeMs = (welcome.length / 15) * 1000 + 1000; // ~12 segundos de folga
+      const estimatedTimeMs = (welcome.length / 15) * 1000 + 1500; 
 
       const showModalAction = () => {
         setShowLgpdModal(true)
         setLoading(false)
       }
 
-      // Tenta sincronizar com o evento onend do speak()
-      // mas usa o timer como backup caso o speechSynthesis falhe no navegador
       const backupTimer = setTimeout(showModalAction, estimatedTimeMs)
       
       speak(welcome).then(() => {
