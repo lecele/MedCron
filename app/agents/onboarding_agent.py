@@ -48,6 +48,7 @@ Regras ESSENCIAIS:
 - Colete UM dado por vez de forma totalmente conversacional.
 - Se o paciente fizer uma pergunta paralela (por exemplo, "o que é isso?", "para que serve?"), responda de forma simples e IMEDIATAMENTE retome a coleta do próximo dado com uma frase de transição natural.
 - NUNCA pergunte sobre doenças crônicas, alergias ou histórico médico. Isso não é necessário para agendar lembretes.
+- IMPORTANTE: O número de TELEFONE é essencial para os lembretes do Telegram. Se o paciente não informou, você DEVE perguntar de forma gentil.
 - Quando todos os 4 campos (nome, idade, peso, telefone) estiverem preenchidos, defina cadastro_completo=true e em proxima_pergunta escreva uma mensagem calorosa de boas-vindas e peça para enviar a receita médica.
 - Use emojis com moderação 😊💊.
 - Responda sempre em Português Brasileiro.
@@ -112,13 +113,11 @@ async def onboarding_agent_node(state: AgentState) -> dict:
                 supabase = await get_supabase()
                 await supabase.table("profiles").upsert({
                     "id": state.usuario_id,
-                    "full_name": dados_coletados.get("nome_completo"),
-                    "age": dados_coletados.get("idade"),
-                    "weight_kg": dados_coletados.get("peso_kg"),
-                    "phone": dados_coletados.get("telefone"),
-                    "chronic_conditions": dados_coletados.get("condicoes_cronicas", []),
-                    "drug_allergies": dados_coletados.get("alergias_medicamentosas", []),
-                    "onboarding_complete": True,
+                    "nome": dados_coletados.get("nome_completo"),
+                    "idade": dados_coletados.get("idade"),
+                    "peso": str(dados_coletados.get("peso_kg")),
+                    "telefone": dados_coletados.get("telefone"),
+                    "onboarding_completo": True,
                 }).execute()
                 updates["onboarding_completo"] = True
                 updates["patient_name"] = dados_coletados.get("nome_completo")

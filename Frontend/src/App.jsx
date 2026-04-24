@@ -43,9 +43,7 @@ function App() {
   // ─── LGPD: consentimento ─────────────────────────────────────────────────
   // Chave no localStorage: 'medcron_lgpd_consent_v{VERSAO_POLITICA}'
   const LGPD_KEY = `medcron_lgpd_consent_v${VERSAO_POLITICA}`
-  const [lgpdConsentido, setLgpdConsentido] = useState(() => {
-    return localStorage.getItem(LGPD_KEY) === 'true'
-  })
+  const [lgpdConsentido, setLgpdConsentido] = useState(false)
 
 
 
@@ -150,17 +148,14 @@ function App() {
       console.warn('[LGPD] Persistência remota falhou, usando localStorage:', err)
     }
 
-    // 3. Salva localmente (garantia offline)
-    localStorage.setItem(LGPD_KEY, 'true')
+    // 3. Marca como consentido apenas nesta sessão
     setLgpdConsentido(true)
     setShowLgpdModal(false)
     
     // Continua a conversa após aceitar
-    setTimeout(() => {
-      const afterAccept = 'Termos aceitos. Obrigado! Para começarmos, você pode me enviar a foto da sua receita ou me dizer quais medicamentos você toma.'
-      setMessages(prev => [...prev, { role: 'assistant', content: afterAccept }])
-      speak(afterAccept)
-    }, 500)
+    const afterAccept = 'Termos aceitos. Obrigado! Para começarmos, você pode me enviar a foto da sua receita ou me dizer quais medicamentos você toma.'
+    setMessages(prev => [...prev, { role: 'assistant', content: afterAccept }])
+    speak(afterAccept)
   }
 
   // ─── Sync Bridge (iOS Fix) ────────────────────────────────────────────────
