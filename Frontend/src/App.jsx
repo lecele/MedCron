@@ -122,9 +122,11 @@ function App() {
   const clearChat = async () => {
     setMessages([])
     setProfile(null)
+    setLgpdConsentido(false) // Garante que peça LGPD na próxima interação
+    setShowLgpdModal(false)
     localStorage.removeItem('med_messages')
     localStorage.removeItem('med_reminders')
-    localStorage.removeItem('med_sessao_id')  // Reseta thread do LangGraph
+    localStorage.removeItem('med_sessao_id')
     await signOutSession()
     window.location.reload()
   }
@@ -235,7 +237,7 @@ function App() {
     const messageText = customInput || input
     if (!messageText.trim() && !fileData) return
 
-    // Fluxo LGPD: Se não consentiu ainda, dispara a mensagem de boas-vindas e aguarda o áudio
+    // Fluxo LGPD: Se não consentiu ainda nesta sessão
     if (!lgpdConsentido) {
       const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
       setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
@@ -243,16 +245,25 @@ function App() {
       // Bloqueia interações enquanto o agente fala
       setLoading(true)
 
-      // Fallback de segurança para o modal aparecer (10s) caso o áudio falhe ou trave
-      const safetyTimer = setTimeout(() => {
+      // Cálculo de tempo estimado de leitura (baseado em ~150 palavras por minuto)
+      // "welcome" tem ~165 caracteres. Aprox 8 a 10 segundos.
+      const estimatedTimeMs = (welcome.length / 15) * 1000 + 1000; // ~12 segundos de folga
+
+      const showModalAction = () => {
         setShowLgpdModal(true)
         setLoading(false)
-      }, 10000)
+      }
+
+      // Tenta sincronizar com o evento onend do speak()
+      // mas usa o timer como backup caso o speechSynthesis falhe no navegador
+      const backupTimer = setTimeout(showModalAction, estimatedTimeMs)
       
-      speak(welcome).finally(() => {
-        clearTimeout(safetyTimer)
-        setShowLgpdModal(true)
-        setLoading(false)
+      speak(welcome).then(() => {
+        clearTimeout(backupTimer)
+        showModalAction()
+      }).catch(() => {
+        clearTimeout(backupTimer)
+        showModalAction()
       })
       return
     }
