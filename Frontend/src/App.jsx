@@ -235,37 +235,34 @@ function App() {
     const messageText = customInput || input
     if (!messageText.trim() && !fileData) return
 
+    // Fluxo LGPD: Se não consentiu ainda, dispara a mensagem de boas-vindas e aguarda o áudio
+    if (!lgpdConsentido) {
+      const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
+      setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
+      
+      // Bloqueia interações enquanto o agente fala
+      setLoading(true)
+
+      // Fallback de segurança para o modal aparecer (10s) caso o áudio falhe ou trave
+      const safetyTimer = setTimeout(() => {
+        setShowLgpdModal(true)
+        setLoading(false)
+      }, 10000)
+      
+      speak(welcome).finally(() => {
+        clearTimeout(safetyTimer)
+        setShowLgpdModal(true)
+        setLoading(false)
+      })
+      return
+    }
+
     const userMessage = {
       role: 'user',
       content: fileData ? `[Arquivo Enviado] ${messageText}` : messageText
     }
     setMessages(prev => [...prev, userMessage])
     setInput('')
-
-    // Mensagem de boas-vindas antes da primeira interação
-    if (!lgpdConsentido) {
-      const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
-      setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
-      
-      // Fallback para garantir que o modal apareça mesmo se o áudio falhar ou demorar
-      const timer = setTimeout(() => setShowLgpdModal(true), 6000)
-      
-      speak(welcome).finally(() => {
-        clearTimeout(timer)
-        setShowLgpdModal(true)
-      })
-      return
-    }
-
-    // Mensagem de boas-vindas padrão caso já tenha lgpdConsentido e mensagens === 0
-    if (messages.length === 0 && !fileData) {
-      setTimeout(() => {
-        const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Para começarmos, me envie uma foto da sua receita médica para que eu possa avaliar.'
-        setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
-        speak(welcome)
-      }, 500)
-      return
-    }
 
     setLoading(true)
 
