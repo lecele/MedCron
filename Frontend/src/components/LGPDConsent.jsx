@@ -51,11 +51,11 @@ export default function LGPDConsent({ onAccept, onDecline }) {
         maxHeight: '85vh',
         display: 'flex',
         flexDirection: 'column',
-        background: 'linear-gradient(145deg, rgba(15,15,30,0.98), rgba(20,20,50,0.98))',
-        border: '1px solid rgba(67, 97, 238, 0.4)',
+        background: 'linear-gradient(145deg, rgba(15,25,20,0.98), rgba(20,35,30,0.98))',
+        border: '1px solid rgba(18, 204, 143, 0.4)',
         borderRadius: '24px',
         padding: '2rem',
-        boxShadow: '0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(67,97,238,0.1)',
+        boxShadow: '0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(18, 204, 143, 0.1)',
         animation: 'fadeIn 0.4s ease',
       }}>
 
@@ -68,11 +68,11 @@ export default function LGPDConsent({ onAccept, onDecline }) {
             width: '56px',
             height: '56px',
             borderRadius: '16px',
-            background: 'linear-gradient(135deg, rgba(67,97,238,0.3), rgba(76,201,240,0.2))',
-            border: '1px solid rgba(67,97,238,0.4)',
+            background: 'linear-gradient(135deg, rgba(18, 204, 143, 0.3), rgba(6, 182, 212, 0.2))',
+            border: '1px solid rgba(18, 204, 143, 0.4)',
           }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-              fill="none" stroke="#4361ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              fill="none" stroke="#12cc8f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <polyline points="9 12 11 14 15 10" />
             </svg>
@@ -205,15 +205,15 @@ export default function LGPDConsent({ onAccept, onDecline }) {
                   width: '100%',
                   padding: '1rem',
                   background: loading
-                    ? 'rgba(67,97,238,0.4)'
-                    : 'linear-gradient(135deg, #4361ee, #4cc9f0)',
+                    ? 'rgba(18, 204, 143, 0.4)'
+                    : 'linear-gradient(135deg, #12cc8f, #06b6d4)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '14px',
                   fontSize: '0.95rem',
                   fontWeight: 700,
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  boxShadow: loading ? 'none' : '0 4px 20px rgba(67,97,238,0.45)',
+                  boxShadow: loading ? 'none' : '0 4px 20px rgba(18, 204, 143, 0.45)',
                   transition: 'all 0.2s',
                   letterSpacing: '0.01em',
                 }}

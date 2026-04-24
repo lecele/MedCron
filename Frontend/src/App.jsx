@@ -47,15 +47,7 @@ function App() {
     return localStorage.getItem(LGPD_KEY) === 'true'
   })
 
-  // Controla a exibição atrasada do modal para que dê tempo de ler as boas-vindas
-  useEffect(() => {
-    if (!lgpdConsentido && messages.length > 0) {
-      const timer = setTimeout(() => setShowLgpdModal(true), 2500)
-      return () => clearTimeout(timer)
-    } else {
-      setShowLgpdModal(false)
-    }
-  }, [lgpdConsentido, messages.length])
+
 
   const fileInputRef = useRef(null)
   const inputRef = useRef(null)
@@ -248,6 +240,9 @@ function App() {
         const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
         setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
         speak(welcome)
+        
+        // Mostra o modal da LGPD logo após o áudio de boas-vindas
+        setTimeout(() => setShowLgpdModal(true), 2500)
       }, 500)
       return
     }
