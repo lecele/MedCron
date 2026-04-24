@@ -223,34 +223,6 @@ uvicorn app.main:app --reload --port 8000
 
 Acesse: http://localhost:5173 (frontend) | http://localhost:8000/docs (API Swagger)
 
----
-
-## ⚙️ Variáveis de Ambiente
-
-```env
-# Supabase
-SUPABASE_URL=https://seu-projeto.supabase.co
-SUPABASE_ANON_KEY=seu-anon-key
-SUPABASE_SERVICE_KEY=seu-service-key  # opcional, para operações admin
-
-# OpenAI
-OPENAI_API_KEY=sk-...
-
-# Google AI (opcional — para Gemini)
-GOOGLE_API_KEY=AI...
-
-# Telegram
-TELEGRAM_BOT_TOKEN=123456:ABC...
-
-# App
-ENVIRONMENT=development           # "production" desabilita Swagger UI
-ALLOWED_ORIGINS=http://localhost:5173
-
-# MemPalace (opcional — memória de longo prazo)
-MEMPALACE_PATH=/caminho/para/palace
-```
-
----
 
 ## 🌐 Deploy na Vercel
 
