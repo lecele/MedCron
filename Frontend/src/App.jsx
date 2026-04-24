@@ -77,7 +77,9 @@ function App() {
           setProfile(p)
           await loadReminders()
         } else {
-          setMessages([])
+          // Remove apenas a mensagem inicial que pedia para aceitar a LGPD,
+          // preservando a mensagem de "Termos aceitos" e outras.
+          setMessages(prev => prev.filter(m => !m.content.includes('leia e aceite nossos Termos')))
         }
         await getAuthState()
       } catch (err) {
