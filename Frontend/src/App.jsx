@@ -75,8 +75,11 @@ function App() {
   // ─── Init ─────────────────────────────────────────────────────────────────
   useEffect(() => {
     const init = async () => {
-      // Se não consentiu ainda nesta sessão, limpa as mensagens para garantir uma "Nova Conversa"
+      // Se não consentiu ainda nesta sessão, garante que não haja lixo de mensagens anteriores
+      // Mas não dispararemos o modal aqui. Ele só dispara no handleSend.
       if (!lgpdConsentido) {
+        // Se houver mensagens salvas mas não consentiu, é um estado inconsistente (ex: refresh)
+        // Limpamos para começar do zero.
         setMessages([])
         localStorage.removeItem('med_messages')
         return
@@ -136,7 +139,6 @@ function App() {
     setInput('')
     localStorage.removeItem('med_messages')
     localStorage.removeItem(LGPD_KEY)
-  }
     localStorage.removeItem('med_reminders')
     localStorage.removeItem('med_sessao_id')
     await signOutSession()
@@ -170,6 +172,7 @@ function App() {
     // 3. Marca como consentido apenas nesta sessão
     setLgpdConsentido(true)
     setShowLgpdModal(false)
+    setLoading(false) // Libera o loading que foi travado no handleSend
     
     // Continua a conversa após aceitar
     const afterAccept = 'Termos aceitos. Obrigado! Para começarmos, você pode me enviar a foto da sua receita ou me dizer quais medicamentos você toma.'
@@ -253,20 +256,18 @@ function App() {
     if (!lgpdConsentido) {
       const welcome = 'Olá! Sou o MedCron, seu assistente de medicações. Antes de começarmos, por favor, leia e aceite nossos Termos de Privacidade (LGPD) que aparecerão na sua tela a seguir.'
       
-      // Limpa o input imediatamente
+      // Limpa o input imediatamente e trava interações
       setInput('')
-      
-      setMessages(prev => [...prev, { role: 'assistant', content: welcome }])
-      
-      // Bloqueia interações enquanto o agente fala
       setLoading(true)
-
-      // Cálculo de tempo estimado de leitura (baseado em ~150 palavras por minuto)
-      const estimatedTimeMs = (welcome.length / 15) * 1000 + 1500; 
+      
+      // Define a primeira mensagem como sendo apenas o boas-vindas
+      setMessages([{ role: 'assistant', content: welcome }])
+      
+      // Cálculo de tempo estimado de leitura (baseado em ~15 caracteres por segundo)
+      const estimatedTimeMs = (welcome.length / 15) * 1000 + 1000; 
 
       const showModalAction = () => {
         setShowLgpdModal(true)
-        setLoading(false)
       }
 
       const backupTimer = setTimeout(showModalAction, estimatedTimeMs)
